@@ -3,20 +3,24 @@ package com.example.demo.services.implementations;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.demo.models.dtos.SavePlaylistDTO;
+import com.example.demo.models.dtos.ShowSongsDTO;
 import com.example.demo.models.entities.Playlist;
 import com.example.demo.models.entities.SongXPlaylist;
 import com.example.demo.models.entities.User;
 import com.example.demo.repositories.PlaylistRepository;
 import com.example.demo.repositories.SongXPlaylistRepository;
 import com.example.demo.services.PlaylistService;
+import com.example.demo.models.dtos.SongDataParseDTO;
 
 import jakarta.transaction.Transactional;
 
 public class PlaylistServiceImpl implements PlaylistService{
+	
 	@Autowired
 	private PlaylistRepository playlistRepository;
 	
@@ -68,9 +72,20 @@ public class PlaylistServiceImpl implements PlaylistService{
 	}
 
 	@Override
-	public List<SongXPlaylist> getSongsInPlaylistWithDatesfind(Playlist playlist) {
+	public List<ShowSongsDTO> getSongsInPlaylistWithDatesfind(Playlist playlist) {
 		List<SongXPlaylist> newSongs = playSongRepository.findByPlaylist(playlist);
-	    return newSongs;
+		
+		List<ShowSongsDTO> newData = new ArrayList<>();
+		
+		newSongs.stream().forEach(data -> {
+			String formattedDuration = String.format("%02d:%02d", data.getSong().getDuration() / 60, data.getSong().getDuration() % 60);
+			SongDataParseDTO newSongData = new SongDataParseDTO(
+					data.getSong().getTitle(), formattedDuration);
+			newData.add(new ShowSongsDTO(newSongData, data.getPlaylist(), data.getDateAdded()));
+		});
+		
+		
+	    return newData;
 	    
 	}
 

@@ -1,5 +1,6 @@
 package com.example.demo.services.implementations;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,13 +31,12 @@ public class SongXPlaylistServiceImpl implements SongXPlaylistService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public void save(LocalDateTime date, Playlist playlist, Song song) throws Exception {
-		SongXPlaylist songXPlaylist = new SongXPlaylist(
-				song,
-				playlist,
-				date
-			);
-		songXPlaylistRepository.save(songXPlaylist);
+	public void save(SaveSongXPlaylistDTO info) throws Exception {
+		SongXPlaylist songplaylist = new SongXPlaylist(
+				info.getSong(),
+				info.getPlaylist(),
+				info.getDateAdded());
+		songXPlaylistRepository.save(songplaylist);
 	}
 	
 

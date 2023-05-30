@@ -1,5 +1,6 @@
 package com.example.demo.models.entities;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -16,7 +17,6 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Embeddable
 @Data
 @NoArgsConstructor
 @Entity
@@ -35,10 +35,10 @@ public class SongXPlaylist {
 	@JoinColumn(name = "playlist_code")
 	Playlist playlist;
 	
-	@Column(name = "dateAdded")
-	private LocalDateTime dateAdded;
+	@Column(name = "date_added")
+	private Timestamp dateAdded;
 
-	public SongXPlaylist(Song song, Playlist playlist, LocalDateTime dateAdded) {
+	public SongXPlaylist(Song song, Playlist playlist, Timestamp dateAdded) {
 		super();
 		this.song = song;
 		this.playlist = playlist;

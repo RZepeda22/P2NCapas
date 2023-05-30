@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -69,18 +70,24 @@ public class PlaylistController {
 	}
 	
 		@PostMapping("/playlist/{code}")
-		public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") UUID playlistUUID, @RequestBody String songCode){
-		String playListCode = playlistUUID.toString();
+		public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") String playListCode, @RequestBody String songCode){
 		Song songSearch = songService.findOneByCode(songCode);
 		Playlist playlistSearch = playlistService.findOneByCode(playListCode);
 		if(songSearch == null || playlistSearch == null) {
 			return new ResponseEntity<>("Song or playlist not found", HttpStatus.NOT_FOUND);
+			
+			
 		}
 		
-		LocalDateTime now = LocalDateTime.now();
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		SaveSongXPlaylistDTO data = new SaveSongXPlaylistDTO(
+				songSearch,
+				playlistSearch,
+				now);
+		
 		
 		try {
-			songxplayService.save(now, playlistSearch, songSearch);
+			songxplayService.save(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>("Internal server Error", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -88,6 +95,7 @@ public class PlaylistController {
 		return new ResponseEntity<>(songSearch.getTitle() + " Song added to " + playlistSearch.getTitle(), HttpStatus.OK);
 		
 	}
+		
 		@GetMapping("/playlist/{code}")
 		public ResponseEntity<?> getAllThePlaylist(@PathVariable(name = "code") String playListCode){
 			if(playlistService.findAllByCode(playListCode).isEmpty()) {
