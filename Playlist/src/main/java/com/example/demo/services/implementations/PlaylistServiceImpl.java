@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.example.demo.models.dtos.GetPlaylistDataDTO;
 import com.example.demo.models.dtos.SavePlaylistDTO;
 import com.example.demo.models.dtos.ShowSongsDTO;
 import com.example.demo.models.entities.Playlist;
@@ -19,6 +21,7 @@ import com.example.demo.models.dtos.SongDataParseDTO;
 
 import jakarta.transaction.Transactional;
 
+@Service
 public class PlaylistServiceImpl implements PlaylistService{
 	
 	@Autowired
@@ -87,6 +90,49 @@ public class PlaylistServiceImpl implements PlaylistService{
 		
 	    return newData;
 	    
+	}
+
+	@Override
+	public List<GetPlaylistDataDTO> findByTitleContainingIgnoreCase(String title) {
+		List<Playlist> allPlaylistsByTitle = playlistRepository.findByTitleContainingIgnoreCase(title);
+		List<GetPlaylistDataDTO> allPlaylistByTitleAndUser  = new ArrayList<>();
+		
+		allPlaylistsByTitle.stream().forEach(data ->{
+			allPlaylistByTitleAndUser.add(new GetPlaylistDataDTO(
+					data.getTitle(),
+					data.getDescription()));
+		});
+		return allPlaylistByTitleAndUser;
+	}
+
+	@Override
+	public List<GetPlaylistDataDTO> findByTitleAndAlsoIdentifier(User user, String title) {
+		List<Playlist> allPlaylistsByTitle = playlistRepository.findByTitleContainingIgnoreCase(title);
+		List<GetPlaylistDataDTO> allPlaylistByTitleAndUser  = new ArrayList<>();
+		allPlaylistsByTitle.stream().forEach(data -> {
+			if(data.getUser().getEmail().equals(user.getEmail())) {
+				allPlaylistByTitleAndUser.add(new GetPlaylistDataDTO(
+						data.getTitle(),
+						data.getDescription()));
+			}
+			
+		});
+		return allPlaylistByTitleAndUser;
+	}
+
+	@Override
+	public List<GetPlaylistDataDTO> findByUserOnly(User user) {
+		List<Playlist> allPlaylistsByTitle = playlistRepository.findAll();
+		List<GetPlaylistDataDTO> allPlaylistByTitleAndUser  = new ArrayList<>();
+		allPlaylistsByTitle.stream().forEach(data -> {
+			if(data.getUser().getEmail().equals(user.getEmail())) {
+				allPlaylistByTitleAndUser.add(new GetPlaylistDataDTO(
+						data.getTitle(),
+						data.getDescription()));
+			}
+			
+		});
+		return allPlaylistByTitleAndUser;
 	}
 
 

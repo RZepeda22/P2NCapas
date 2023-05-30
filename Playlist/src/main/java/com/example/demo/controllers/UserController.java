@@ -20,6 +20,7 @@ import com.example.demo.models.dtos.SaveSongDTO;
 import com.example.demo.models.dtos.UserDataDTO;
 import com.example.demo.models.entities.Song;
 import com.example.demo.models.entities.User;
+import com.example.demo.services.PlaylistService;
 import com.example.demo.services.SongService;
 import com.example.demo.services.UserService;
 import com.example.demo.utils.ErrorHandlers;
@@ -31,6 +32,9 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PlaylistService playlistService;
 	
 	@Autowired
 	private ErrorHandlers errorHandler;
@@ -49,6 +53,7 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors())), 
 					HttpStatus.BAD_REQUEST);
 		}
+		System.out.println(info);
 		
 		try {
 			
@@ -60,21 +65,22 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("user/playlist")
-	public ResponseEntity<?> saveCategory(@ModelAttribute @Valid UserDataDTO info, BindingResult validations) {
-		if(validations.hasErrors()) {
-			return new ResponseEntity<>(new ErrorsDTO(
-					errorHandler.mapErrors(validations.getFieldErrors())), 
-					HttpStatus.BAD_REQUEST);
+	@GetMapping("/user/playlist")
+	public ResponseEntity<?> getPlaylists(String identifier, String playlistTitle){
+		
+		if(identifier.isEmpty()) {
+			return new ResponseEntity<>(playlistService.findByTitleContainingIgnoreCase(playlistTitle), HttpStatus.OK);
+		}
+		User user = userService.getUserByIdentifier(identifier);
+		if(identifier.isEmpty() && playlistTitle.isEmpty()) {
+			return new ResponseEntity<>("Empty fields, cannot retrieve data", HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			
-			userService.register(info);
-			return new ResponseEntity<>(new MessageDTO("Song Created"), HttpStatus.CREATED);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(new MessageDTO("Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+		if(playlistTitle.isEmpty()) {
+			return new ResponseEntity<>(playlistService.findByUserOnly(user), HttpStatus.OK);
 		}
+		
+		return new ResponseEntity<>(playlistService.findByTitleAndAlsoIdentifier(user, playlistTitle), HttpStatus.OK);
 	}
+
 }
