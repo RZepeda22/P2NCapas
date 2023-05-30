@@ -88,6 +88,25 @@ public class UserServiceImpl implements UserService {
 		return tempUser;
 	}
 
+	@Override
+	public User getUserByIdentifier(String identifier) {
+		User tempUser =  null;
+		List<User> userSearch = repository.findAll();
+		if(userSearch.stream().anyMatch(user -> user.getEmail().equals(identifier))) {
+			tempUser = userSearch.stream()
+					.filter(user -> user.getEmail().equals(identifier))
+					.findAny()
+					.orElse(null);
+		}
+		else {
+			tempUser = userSearch.stream()
+			.filter(user -> user.getUsername().equals(identifier))
+			.findAny()
+			.orElse(null);
+		}
+		return tempUser;
+	}
+
 	
 
 }
