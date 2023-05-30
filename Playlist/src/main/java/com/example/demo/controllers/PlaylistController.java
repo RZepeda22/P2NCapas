@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,7 +68,7 @@ public class PlaylistController {
 	}
 	
 		@PostMapping("/playlist/{code}")
-		public ResponseEntity<?> saveSongInPlaylist(@PathVariable(name = "code") String playListCode, String songCode){
+		public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") String playListCode, @RequestBody String songCode){
 		Song songSearch = songService.findOneByCode(songCode);
 		Playlist playlistSearch = playlistService.findOneByCode(playListCode);
 		if(songSearch == null || playlistSearch == null) {
@@ -89,6 +91,9 @@ public class PlaylistController {
 			if(playlistService.findAllByCode(playListCode).isEmpty()) {
 				return new ResponseEntity<>("Playlist Not Found", HttpStatus.NOT_FOUND);
 			}
+			
+			Playlist playlist = playlistService.findOneByCode(playListCode);
+			return new ResponseEntity<>(playlistService.getSongsInPlaylistWithDatesfind(playlist), HttpStatus.OK);
 		}
 
 }
