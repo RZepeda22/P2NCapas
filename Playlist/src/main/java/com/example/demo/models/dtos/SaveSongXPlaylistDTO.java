@@ -1,5 +1,6 @@
 package com.example.demo.models.dtos;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import lombok.Data;
 @Data
 public class SaveSongXPlaylistDTO {
 	@NotEmpty
-	private Date dateAdded;
+	private LocalDateTime dateAdded;
 	
 	
 }

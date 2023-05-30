@@ -3,6 +3,8 @@ package com.example.demo.services.implementations;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,13 +28,12 @@ public class SongXPlaylistServiceImpl implements SongXPlaylistService {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	public void save(SaveSongXPlaylistDTO data, Playlist playlist, Song song) throws Exception {
+	public void save(LocalDateTime date, Playlist playlist, Song song) throws Exception {
 		SongXPlaylist songXPlaylist = new SongXPlaylist(
 				song,
 				playlist,
-				data.getDateAdded()
+				date
 			);
-	
 		songXPlaylistRepository.save(songXPlaylist);
 	}
 

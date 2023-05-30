@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.dtos.SavePlaylistDTO;
+import com.example.demo.models.dtos.SaveSongXPlaylistDTO;
 import com.example.demo.models.entities.Playlist;
 import com.example.demo.models.entities.Song;
 import com.example.demo.models.entities.User;
@@ -63,13 +65,23 @@ public class PlaylistController {
 		return new ResponseEntity<>("Saved Playlist", HttpStatus.OK);
 	}
 	
-	@PostMapping("/playlist/{code}")
-	public ResponseEntity<?> saveSongInPlaylist(@PathVariable(name = "code") String playListCode, String songCode){
+		@PostMapping("/playlist/{code}")
+		public ResponseEntity<?> saveSongInPlaylist(@PathVariable(name = "code") String playListCode, String songCode){
 		Song songSearch = songService.findOneByCode(songCode);
 		Playlist playlistSearch = playlistService.findOneByCode(playListCode);
 		if(songSearch == null || playlistSearch == null) {
 			return new ResponseEntity<>("Song or playlist not found", HttpStatus.NOT_FOUND);
 		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		
+		try {
+			songxplayService.save(now, playlistSearch, songSearch);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Internal server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(songSearch.getTitle() + " Song added to " + playlistSearch.getTitle(), HttpStatus.OK);
 		
 	}
 
