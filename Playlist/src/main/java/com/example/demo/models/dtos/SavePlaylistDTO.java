@@ -10,6 +10,9 @@ import lombok.Data;
 @Data
 public class SavePlaylistDTO {
 	@NotEmpty
+	private String identifier;
+	
+	@NotEmpty
 	private String title;
 	
 	@NotEmpty

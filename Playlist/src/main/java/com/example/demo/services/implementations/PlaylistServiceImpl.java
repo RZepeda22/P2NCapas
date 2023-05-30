@@ -32,50 +32,6 @@ public class PlaylistServiceImpl implements PlaylistService{
 	}
 
 	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public void deleteOneByCode(String code) {
-		UUID id = UUID.fromString(code);
-		playlistRepository.deleteById(id);
-		
-	}
-
-	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public void deleteOneByTitle(String title) {
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		Playlist tempPlaylist = playlistSearch.stream()
-						.filter(playlist -> playlist.getTitle().equals(title))
-						.findAny()
-						.orElse(null);
-		playlistRepository.deleteById(tempPlaylist.getCode());
-		
-	}
-
-	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public void deleteOneByDescription(String description) {
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		Playlist tempPlaylist = playlistSearch.stream()
-						.filter(playlist -> playlist.getDescription().equals(description))
-						.findAny()
-						.orElse(null);
-		playlistRepository.deleteById(tempPlaylist.getCode());
-		
-	}
-
-	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public void deleteOneByUser(String userCode) {
-		/*UUID id = UUID.fromString(userCode);
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		Playlist tempPlaylist = playlistSearch.stream()
-						.filter(playlist -> playlist.getUserCode().equals(id))
-						.findAny()
-						.orElse(null);
-		playlistRepository.deleteById(tempPlaylist.getCode());*/
-	}
-
-	@Override
 	public List<Playlist> findAll() {
 		return playlistRepository.findAll();
 	}
@@ -91,27 +47,8 @@ public class PlaylistServiceImpl implements PlaylistService{
 		return playlistSearch;
 	}
 
-	@Override
-	public List<Playlist> findAllByTitle(String title) {
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		playlistSearch = playlistSearch.stream()
-						.filter(playlist -> playlist.getTitle().equals(title))
-						.collect(Collectors.toList());
-		
-		return playlistSearch;
-	}
 
-	@Override
-	public List<Playlist> findAllByUser(String code) {
-		/*UUID id = UUID.fromString(code);
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		playlistSearch = playlistSearch.stream()
-						.filter(playlist -> playlist.getUserCode().equals(id))
-						.collect(Collectors.toList());
-		
-		return playlistSearch;*/
-		return null;
-	}
+	
 
 	@Override
 	public Playlist findOneByCode(String code) {
@@ -125,30 +62,7 @@ public class PlaylistServiceImpl implements PlaylistService{
 		return tempPlaylistSearch;
 	}
 
-	@Override
-	public Playlist findOneByTitle(String title) {
-		/*List<Playlist> playlistSearch = playlistRepository.findAll();
-		Playlist tempPlaylistSearch = playlistSearch.stream()
-						.filter(playlist -> playlist.getTitle().equals(title))
-						.findAny()
-						.orElse(null);
-		
-		return tempPlaylistSearch;*/
-		return null;
-	}
 
-	@Override
-	public Playlist findOneByUser(String code) {
-		/*UUID id = UUID.fromString(code);
-		List<Playlist> playlistSearch = playlistRepository.findAll();
-		Playlist tempPlaylistSearch = playlistSearch.stream()
-						.filter(playlist -> playlist.getUserCode().equals(id))
-						.findAny()
-						.orElse(null);
-		
-		return tempPlaylistSearch;*/
-		return null;
-	}
 
 	
 	
