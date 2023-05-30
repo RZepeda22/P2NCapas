@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,7 +69,8 @@ public class PlaylistController {
 	}
 	
 		@PostMapping("/playlist/{code}")
-		public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") String playListCode, @RequestBody String songCode){
+		public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") UUID playlistUUID, @RequestBody String songCode){
+		String playListCode = playlistUUID.toString();
 		Song songSearch = songService.findOneByCode(songCode);
 		Playlist playlistSearch = playlistService.findOneByCode(playListCode);
 		if(songSearch == null || playlistSearch == null) {
