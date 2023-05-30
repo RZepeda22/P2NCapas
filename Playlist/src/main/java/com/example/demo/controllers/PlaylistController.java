@@ -84,5 +84,11 @@ public class PlaylistController {
 		return new ResponseEntity<>(songSearch.getTitle() + " Song added to " + playlistSearch.getTitle(), HttpStatus.OK);
 		
 	}
+		@GetMapping("/playlist/{code}")
+		public ResponseEntity<?> getAllThePlaylist(@PathVariable(name = "code") String playListCode){
+			if(playlistService.findAllByCode(playListCode).isEmpty()) {
+				return new ResponseEntity<>("Playlist Not Found", HttpStatus.NOT_FOUND);
+			}
+		}
 
 }
