@@ -17,7 +17,8 @@ public class UserDataDTO {
 	private String email;
 	
 	@NotEmpty
-	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?]).*$")
+	@Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+    message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
 	@Size(min=8)
 	private String password;
 }

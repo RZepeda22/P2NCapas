@@ -9,4 +9,5 @@ import com.example.demo.models.entities.Song;
 
 public interface SongRepository extends ListCrudRepository<Song, UUID>{
 	List<Song> findByTitleContainingIgnoreCase(String title);
+	List<Song> findAllByCode(UUID code);
 }

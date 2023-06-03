@@ -12,11 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.dtos.MessageDTO;
 import com.example.demo.models.dtos.SongDataParseDTO;
-import com.example.demo.models.entities.Song;
 import com.example.demo.services.SongService;
-import com.example.demo.utils.ErrorHandlers;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("")
@@ -24,12 +20,11 @@ public class SongController {
 	@Autowired
 	private SongService songService;
 	
-	@Autowired
-	private ErrorHandlers errorHandler;
+	
 	
 	@GetMapping("/song")
 	public ResponseEntity<?> findAllSongsAndParcialTitle(String title){
-		System.out.println(title);
+		
 		if(title == null) {
 			List<SongDataParseDTO> songs = songService.findAll();
 			return new ResponseEntity<>(songs, HttpStatus.OK);

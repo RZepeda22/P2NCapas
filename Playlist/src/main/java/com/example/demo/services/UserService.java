@@ -10,4 +10,5 @@ public interface UserService {
 	void changeUserName(String id, String username) throws Exception;
 	void deleteById(String id) throws Exception;
 	void changePassword(String id, String password) throws Exception;
+	User getUserByIdentifier(String identifier);
 }

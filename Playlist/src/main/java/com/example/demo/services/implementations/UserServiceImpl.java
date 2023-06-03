@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.dtos.UserDataDTO;
-import com.example.demo.models.entities.Song;
 import com.example.demo.models.entities.User;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
@@ -19,7 +18,7 @@ import jakarta.transaction.Transactional;
 public class UserServiceImpl implements UserService {
 	
 	@Autowired
-	UserRepository repository;
+	private UserRepository repository;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -87,6 +86,26 @@ public class UserServiceImpl implements UserService {
 		
 		return tempUser;
 	}
+
+	@Override
+	public User getUserByIdentifier(String identifier) {
+		User tempUser =  null;
+		List<User> userSearch = repository.findAll();
+		if(userSearch.stream().anyMatch(user -> user.getEmail().equals(identifier))) {
+			tempUser = userSearch.stream()
+					.filter(user -> user.getEmail().equals(identifier))
+					.findAny()
+					.orElse(null);
+		}
+		else {
+			tempUser = userSearch.stream()
+			.filter(user -> user.getUsername().equals(identifier))
+			.findAny()
+			.orElse(null);
+		}
+		return tempUser;
+	}
+
 
 	
 

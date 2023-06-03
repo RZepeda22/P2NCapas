@@ -6,16 +6,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SongDataParseDTO {
-	
+public class CodeDataDTO {
 	@NotEmpty
 	private String code;
-	
-	@NotEmpty
-	private String title;
-	
-	@NotEmpty
-	private String duration;
 	
 	
 }

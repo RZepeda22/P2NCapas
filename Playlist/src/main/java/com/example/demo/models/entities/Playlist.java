@@ -38,7 +38,7 @@ public class Playlist {
 	private String description;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "code_user", nullable = true)
+	@JoinColumn(name = "user_code", nullable = true)
 	private User user;
 	
 	@JsonIgnore

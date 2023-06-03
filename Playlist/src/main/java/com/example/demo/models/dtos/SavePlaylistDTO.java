@@ -1,9 +1,5 @@
 package com.example.demo.models.dtos;
 
-import java.util.UUID;
-
-import com.example.demo.models.entities.User;
-
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -14,6 +10,9 @@ public class SavePlaylistDTO {
 	
 	@NotEmpty
 	private String description;
+	
+	@NotEmpty
+	private String identifier;
 	
 	
 	

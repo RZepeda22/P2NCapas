@@ -1,6 +1,6 @@
 package com.example.demo.models.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -35,9 +35,9 @@ public class SongXPlaylist {
 	Playlist playlist;
 	
 	@Column(name = "dateAdded")
-	private Date dateAdded;
+	private LocalDateTime dateAdded;
 
-	public SongXPlaylist(Song song, Playlist playlist, Date dateAdded) {
+	public SongXPlaylist(Song song, Playlist playlist, LocalDateTime dateAdded) {
 		super();
 		this.song = song;
 		this.playlist = playlist;

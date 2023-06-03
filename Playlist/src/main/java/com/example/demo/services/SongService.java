@@ -1,6 +1,8 @@
 package com.example.demo.services;
 
 import java.util.List;
+
+import com.example.demo.models.dtos.CodeDataDTO;
 import com.example.demo.models.dtos.SaveSongDTO;
 import com.example.demo.models.dtos.SongDataParseDTO;
 import com.example.demo.models.entities.Song;
@@ -16,13 +18,13 @@ public interface SongService {
 	
 	//FindAll
 	List<SongDataParseDTO> findAll();
-	List<Song> findAllByCode(String code);
-	List<Song> findAllByTitle(String title);
-	List<Song> findAllByDuration(int duration);
 	List<SongDataParseDTO> findAllByParcialTitle(String title);
+	List<SongDataParseDTO> findAllSongByListCode(List<CodeDataDTO> songsCodes);
+	
 	
 	//Find
 	Song findOneByCode(String code);
 	Song findOneByTitle(String title);
+	Song getSongByIdentifier(String identifier);
 }
 
