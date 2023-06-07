@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.dtos.ErrorsDTO;
+import com.example.demo.models.dtos.LogInUserDataDTO;
 import com.example.demo.models.dtos.MessageDTO;
 import com.example.demo.models.dtos.PlaylistInfoDTO;
 import com.example.demo.models.dtos.UserDataDTO;
 import com.example.demo.models.entities.User;
+import com.example.demo.services.JWTTokenProviderService;
 import com.example.demo.services.PlaylistService;
 import com.example.demo.services.UserService;
 import com.example.demo.utils.ErrorHandlers;
@@ -34,6 +36,9 @@ public class UserController {
 	
 	@Autowired
 	private ErrorHandlers errorHandler;
+	
+	@Autowired
+	private JWTTokenProviderService JWTTokenGenerator;
 	
 	
 	@PostMapping("/auth/signup")
@@ -60,23 +65,28 @@ public class UserController {
 		}
 	}
 	
-	/*@GetMapping("user/playlist")
-	public ResponseEntity<?> saveCategory(@ModelAttribute @Valid UserDataDTO info, BindingResult validations) {
+	@PostMapping("/auth/login")
+	public ResponseEntity<?> login(@ModelAttribute @Valid LogInUserDataDTO info, BindingResult validations){
 		if(validations.hasErrors()) {
 			return new ResponseEntity<>(new ErrorsDTO(
 					errorHandler.mapErrors(validations.getFieldErrors())), 
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			
-			userService.register(info);
-			return new ResponseEntity<>(new MessageDTO("Song Created"), HttpStatus.CREATED);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(new MessageDTO("Internal Server Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+		User user = userService.getUserByIdentifier(info.getIdentifier());
+		
+		if(user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}*/
+		
+		if(!userService.comparePassword(info.getPassword(), user.getPassword())) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		String token = JWTTokenGenerator.generateToken(user.getUsername());
+		
+		return new ResponseEntity<>(token, HttpStatus.OK);
+	}
 	
 	@GetMapping("/user/playlist")
 	public ResponseEntity<?> getPlaylists(String identifier, String playlistTitle){

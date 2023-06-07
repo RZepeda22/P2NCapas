@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.dtos.UserDataDTO;
@@ -19,14 +20,19 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	public PasswordEncoder passwordEncoder;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public void register(UserDataDTO registerInfo) throws Exception {
-		User newUser = new User(
-				registerInfo.getUsername(),
-				registerInfo.getEmail(),
-				registerInfo.getPassword());
+		User newUser = new User();
+		
+		newUser.setEmail(registerInfo.getEmail());
+		newUser.setUsername(registerInfo.getUsername());
+		newUser.setPassword(
+				passwordEncoder.encode(registerInfo.getPassword()));
 		
 		repository.save(newUser);
 		
@@ -104,6 +110,11 @@ public class UserServiceImpl implements UserService {
 			.orElse(null);
 		}
 		return tempUser;
+	}
+
+	@Override
+	public Boolean comparePassword(String toCompare, String current) {
+		return passwordEncoder.matches(toCompare, current);
 	}
 
 

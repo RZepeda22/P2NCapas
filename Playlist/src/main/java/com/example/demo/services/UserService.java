@@ -11,4 +11,5 @@ public interface UserService {
 	void deleteById(String id) throws Exception;
 	void changePassword(String id, String password) throws Exception;
 	User getUserByIdentifier(String identifier);
+	Boolean comparePassword(String toCompare, String current);
 }
