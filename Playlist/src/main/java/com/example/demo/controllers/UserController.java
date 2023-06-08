@@ -16,7 +16,9 @@ import com.example.demo.models.dtos.ErrorsDTO;
 import com.example.demo.models.dtos.LogInUserDataDTO;
 import com.example.demo.models.dtos.MessageDTO;
 import com.example.demo.models.dtos.PlaylistInfoDTO;
+import com.example.demo.models.dtos.TokenDTO;
 import com.example.demo.models.dtos.UserDataDTO;
+import com.example.demo.models.entities.Token;
 import com.example.demo.models.entities.User;
 import com.example.demo.services.JWTTokenProviderService;
 import com.example.demo.services.PlaylistService;
@@ -74,7 +76,7 @@ public class UserController {
 		}
 		
 		User user = userService.getUserByIdentifier(info.getIdentifier());
-		
+		//System.out.println(userService.comparePassword(info.getPassword(), user.getPassword()));
 		if(user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -83,9 +85,16 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
-		String token = JWTTokenGenerator.generateToken(user.getUsername());
+		try {
+			Token token = userService.registerToken(user);
+			System.out.println(token);
+			return new ResponseEntity<>(new TokenDTO(token), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		return new ResponseEntity<>(token, HttpStatus.OK);
+		
 	}
 	
 	@GetMapping("/user/playlist")

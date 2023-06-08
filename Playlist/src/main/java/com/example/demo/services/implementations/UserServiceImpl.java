@@ -9,9 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.dtos.UserDataDTO;
+import com.example.demo.models.entities.Token;
 import com.example.demo.models.entities.User;
+import com.example.demo.repositories.TokenRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
+import com.example.demo.utils.JWTTools;
 
 import jakarta.transaction.Transactional;
 
@@ -23,6 +26,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	public PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JWTTools jwtTools;
+	
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -117,6 +126,51 @@ public class UserServiceImpl implements UserService {
 		return passwordEncoder.matches(toCompare, current);
 	}
 
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public Token registerToken(User user) throws Exception {
+		cleanTokens(user);
+		
+		String tokenString = jwtTools.generateToken(user);
+		Token token = new Token(tokenString, user);
+		
+		tokenRepository.save(token);
+		
+		return token;
+	}
+
+	@Override
+	public Boolean isTokenValid(User user, String token) {
+		try {
+			cleanTokens(user);
+			List<Token> tokens = tokenRepository.findByUserAndActive(user, true);
+			
+			tokens.stream()
+				.filter(tk -> tk.getContent().equals(token))
+				.findAny()
+				.orElseThrow(() -> new Exception());
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}		
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	public void cleanTokens(User user) throws Exception {
+		List<Token> tokens = tokenRepository.findByUserAndActive(user, true);
+		
+		tokens.forEach(token -> {
+			if(!jwtTools.verifyToken(token.getContent())) {
+				token.setActive(false);
+				tokenRepository.save(token);
+			}
+		});
+		
+}
+
+	
 
 	
 

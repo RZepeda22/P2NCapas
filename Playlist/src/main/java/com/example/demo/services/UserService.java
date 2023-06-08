@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.models.dtos.UserDataDTO;
+import com.example.demo.models.entities.Token;
 import com.example.demo.models.entities.User;
+
 
 public interface UserService {
 	void register(UserDataDTO registerInfo) throws Exception;
@@ -12,4 +14,7 @@ public interface UserService {
 	void changePassword(String id, String password) throws Exception;
 	User getUserByIdentifier(String identifier);
 	Boolean comparePassword(String toCompare, String current);
+	Token registerToken(User user) throws Exception;
+	Boolean isTokenValid(User user, String token);
+	void cleanTokens(User user) throws Exception;
 }
