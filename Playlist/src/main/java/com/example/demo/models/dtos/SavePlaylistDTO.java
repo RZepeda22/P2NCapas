@@ -11,9 +11,6 @@ public class SavePlaylistDTO {
 	@NotEmpty
 	private String description;
 	
-	@NotEmpty
-	private String identifier;
-	
 	
 	
 }

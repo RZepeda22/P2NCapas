@@ -52,20 +52,15 @@ public class PlaylistController {
 			return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
 		
-		User user = userService.getUserByIdentifier(info.getIdentifier());
+		User user = userService.findUserAuthenticated();
 		
 		if(user == null) {
 			return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
 		}
-		System.out.println(info.getTitle());
-		System.out.println(user.getCode().toString());
-		System.out.println(user.getEmail());
 		
 		if(playlistService.existPlaylistInUser(info.getTitle(), user)) 
 		{
-			//System.out.println(user.getCode().toString());
 			Playlist playlistSearch = playlistService.findPlaylistByTitlePlaylistAndUser(info.getTitle(), user);
-			//System.out.println(playlistSearch);
 			
 			return new ResponseEntity<>( "The playlist is already created for this user \n"
 										+ "Code: " + playlistSearch.getCode().toString() + "\n"
@@ -83,39 +78,13 @@ public class PlaylistController {
 		}
 		return new ResponseEntity<>("Saved Playlist", HttpStatus.OK);
 	}
-	
-	 /*@PostMapping("/user/playlist")
-	 public ResponseEntity<?> userPlaylist(@ModelAttribute @Valid SavePlaylistDTO info, BindingResult validations){
-			if(validations.hasErrors()) {
-				return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
-			}
-			User user = userService.getUserByIdentifier(info.getIdentifier());
-			System.out.println(user);
-			if(user == null) {
-				return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
-			}
-			
-			
-			try {
-				playlistService.save(info, user);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			return new ResponseEntity<>("Saved Playlist", HttpStatus.OK);
-		}*/
 	 
 	 @PostMapping("/playlist/{code}")
 		public ResponseEntity<?> saveSongInPlaylist(@PathVariable(name = "code") String playListCode, String songCode){
-	 //public ResponseEntity<?> saveSongInPlaylist(@PathVariable("code") UUID playlistUUID, @RequestBody String songCode){
-	        //String playListCode = playlistUUID.toString();
+	 
 
 		Song songSearch = songService.getSongByIdentifier(songCode);
-		//Song songSearch = songService.findOneByCode(songCode);
-		System.out.println(songCode);
-		System.out.println("Song " + songSearch);
-		System.out.println("El tipo de dato del objeto es de");
-		System.out.println(playListCode.getClass());
+		
 		
 		
 		
@@ -126,7 +95,6 @@ public class PlaylistController {
 		String tempCode = playListCode;
 		System.out.println(tempCode);
 		Playlist playlistSearch = playlistService.getPlaylistByIdentifier(tempCode);
-		//Playlist playlistSearch = playlistService.findOneByCode(tempCode);
 		
 		
 		if(playlistSearch == null  ) {
@@ -152,23 +120,6 @@ public class PlaylistController {
 		return new ResponseEntity<>(songSearch.getTitle() + " Song added to " + playlistSearch.getTitle(), HttpStatus.OK);
 		
 	}
-	 /*@GetMapping("/play")
-	 public ResponseEntity<?> findAllPlay(){
-			
-			
-				List<Playlist> songs = playlistService.findAll();
-				return new ResponseEntity<>(songs, HttpStatus.OK);
-			
-	 }
-	 
-	 @GetMapping("/esp")
-	 public ResponseEntity<?> findOneSpecificPlay(){
-			
-			
-				Playlist play = playlistService.findOneByCode("594a48b6-a4e7-4168-951f-db2061bc6bd5");
-				return new ResponseEntity<>(play, HttpStatus.OK);
-			
-	 }*/
 	 
 	 @GetMapping("/playlist/{code}")
 		public ResponseEntity<?> getAllThePlaylist(@PathVariable(name = "code") String playListCode){
