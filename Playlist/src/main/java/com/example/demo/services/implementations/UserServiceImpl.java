@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -169,6 +170,16 @@ public class UserServiceImpl implements UserService {
 		});
 		
 }
+
+	@Override
+	public User findUserAuthenticated() {
+		String username = SecurityContextHolder
+				.getContext()
+				.getAuthentication()
+				.getName();
+			
+			return repository.findOneByUsernameOrEmail(username, username);
+	}
 
 	
 
