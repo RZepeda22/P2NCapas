@@ -35,12 +35,6 @@ public class SecurityConfig {
 	@Autowired
 	private JWTTokenFIlter filter;
 	
-	@Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
-        http.httpBasic(withDefaults()).csrf((csrf) -> csrf.disable());
-     return http.build();
-    }
 	
 	@Bean
 	AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {

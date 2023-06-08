@@ -98,34 +98,23 @@ public class UserController {
 	}
 	
 	@GetMapping("/user/playlist")
-	public ResponseEntity<?> getPlaylists(String identifier, String playlistTitle){
-		System.out.println(identifier);
-		System.out.println(playlistTitle);
-		if((identifier == "" && playlistTitle == "") || (identifier == null && playlistTitle == null)) {
-			return new ResponseEntity<>("Empty fields, cannot retrieve data", HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<?> getPlaylists(String playlistTitle){
 		
-		if(identifier == "" || identifier == null) {
-			List<PlaylistInfoDTO> playlistFound = playlistService.findAllByParcialTitle(playlistTitle);
-			if(playlistFound.isEmpty()) {
-				return new ResponseEntity<>("Not found playlist with title", HttpStatus.NOT_FOUND);
+			// Busca dentro del contexto del Spring Security el usuario y lo extrae de ahi
+			// Para ello, se debe enviar en el Header de Authorization el token, o en Bearer Token en el insomnia
+			User user = userService.findUserAuthenticated();
+			
+			if(user == null) {
+				return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 			}
-			return new ResponseEntity<>(playlistFound, HttpStatus.OK);
-		}
-		
-		
-
-		if(playlistTitle == "" || playlistTitle == null) {
-			System.out.println("Entro");
-			User user = userService.getUserByIdentifier(identifier);
+			if(playlistTitle == "" || playlistTitle == null) {
+			
 			List<PlaylistInfoDTO> playlistFound = playlistService.findAllByUser(user.getCode().toString());
 			if(playlistFound.isEmpty()) {
 				return new ResponseEntity<>("Not found playlist with title for this user", HttpStatus.NOT_FOUND);
 			}
 			return new ResponseEntity<>(playlistFound, HttpStatus.OK);
 		}
-		
-		User user = userService.getUserByIdentifier(identifier);
 		
 		List<PlaylistInfoDTO> playlistFound = playlistService.findAllByParcialTitleAndUser(user.getCode().toString(), playlistTitle);
 		if(playlistFound.isEmpty()) {
